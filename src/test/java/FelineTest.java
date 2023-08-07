@@ -1,50 +1,46 @@
-package com.example;
+import com.example.Feline;
 
-import junit.framework.TestCase;
+import org.junit.Assert;
 import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.mockito.Mockito;
-import org.mockito.Spy;
-import org.mockito.junit.MockitoJUnitRunner;
 
-@RunWith(MockitoJUnitRunner.class)
-public class FelineTest extends TestCase {
-    private final String expected = "Кошачьи";
-    private static final int EXPECTED_KITTENS_COUNT_FOR_MOCK = 1;
-    private int kittensCount = 5;
+import java.util.List;
 
-    @Spy
-    private Feline feline;
+import static org.junit.Assert.*;
+
+public class FelineTest {
 
     @Test
-    public void testEatMeat() throws Exception {
-        feline.eatMeat();
-        Mockito.verify(feline, Mockito.times(1)).getFood("Хищник");
+    public void checkGetFelineFamily(){
+        Feline feline = new Feline();
+        Assert.assertEquals("Кошачьи",feline.getFamily());
     }
 
     @Test
-    public void testGetFamily() {
-        String actual = feline.getFamily();
-        Mockito.verify(feline, Mockito.times(1)).getFamily();
-
-        assertEquals("Ожидаемое семейство не соответствует фактическому",
-                expected, actual);
+    public void checkEatMeatForPredatorAnimalKind() throws Exception {
+        Feline feline = new Feline();
+        List<String> food = List.of("Животные", "Птицы", "Рыба");
+        Assert.assertEquals(food,feline.getFood("Хищник"));
     }
 
     @Test
-    public void testGetKittens() {
-        int actual = feline.getKittens();
-        Mockito.verify(feline).getKittens(EXPECTED_KITTENS_COUNT_FOR_MOCK);
-
-        assertEquals("Количество котят не соответствует ожидаемому",
-                EXPECTED_KITTENS_COUNT_FOR_MOCK, actual);
+    public void checkEatMeatForHerbivorousAnimalKind() throws Exception {
+        Feline feline = new Feline();
+        List<String> food = List.of("Трава", "Различные растения");
+        Assert.assertEquals(food,feline.getFood("Травоядное"));
     }
 
     @Test
-    public void testTestGetKittens() {
-        int actual = feline.getKittens(kittensCount);
-        Mockito.verify(feline).getKittens(Mockito.anyInt());
-
-        assertEquals("Количество котят не соответствует ожидаемому",
-                kittensCount, actual);
+    public void checkEatMeatExceptionForUnknownAnimalKind() throws Exception {
+        Feline feline = new Feline();
+        Exception exception = Assert.assertThrows(Exception.class, () -> {
+            feline.getFood("Грибы");
+        });
+        Assert.assertEquals("Неизвестный вид животного, используйте значение Травоядное или Хищник", exception.getMessage());
     }
+
+    @Test
+    public void verifyKittensCount(){
+        Feline feline = new Feline();
+        Assert.assertEquals(1,feline.getKittens());
+    }
+}
